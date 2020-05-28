@@ -5,7 +5,7 @@ const { DATABASE_URL, PORT } = require("./config");
 
 const app = express();
 
-let router = require("./routes");
+let router = require("./api/routes");
 
 const db = require("./models");
 
