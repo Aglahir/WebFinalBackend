@@ -1,0 +1,31 @@
+{
+    "full_name": "fname1",
+    "user_name": "username1",
+    "password": "nicepass",
+    "user_type": 1,
+    "color": "#FFFFFF"
+}
+
+{
+    "full_name": "privileged1",
+    "user_name": "privileged1",
+    "password": "privilegedpass",
+    "user_type": 3,
+    "color": "#FFFFFF"
+}
+
+{
+    "full_name": "admin1",
+    "user_name": "admin1",
+    "password": "adminpass",
+    "user_type": 3,
+    "color": "#FFFFFF"
+}
+
+{
+    "full_name": "superuser",
+    "user_name": "superuser",
+    "password": "superuserpassword",
+    "user_type": 4,
+    "color": "#FFFFFF"
+}
