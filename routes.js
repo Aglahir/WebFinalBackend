@@ -1,7 +1,7 @@
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
-const baseDir = __filename + "\\..\\api";
+const baseDir = __dirname + "\\api";
 const basename = path.basename(baseDir);
 const cors = require("./middleware/cors");
 const tokenValidation = require("./middleware/TokenValidation");
