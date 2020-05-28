@@ -23,7 +23,7 @@ function eRoutes(db) {
   // Import all api routes
   fs.readdirSync(__dirname).forEach((dir) => {
     if (dir !== basename)
-      fs.readdirSync(__dirname + "\\" + dir)
+      fs.readdirSync(__dirname + "/" + dir)
         .filter((file) => {
           return (
             file.indexOf(".") !== 0 &&
