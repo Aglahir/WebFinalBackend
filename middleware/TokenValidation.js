@@ -22,8 +22,13 @@ function TokenValidation(db) {
           db.users
             .getUserById(decoded._id)
             .then((user) => {
-              req.user = user;
-              next();
+              if (!user) {
+                res.statusMessage = "Invalid token";
+                return res.status(400).end();
+              } else {
+                req.user = user;
+                next();
+              }
             })
             .catch((err) => {
               res.statusMessage = err.message;
