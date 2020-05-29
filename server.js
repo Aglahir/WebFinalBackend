@@ -13,7 +13,7 @@ app.use(morgan("dev"));
 app.use("/api/", router(db));
 
 app.listen(PORT, () => {
-  console.log("This server is running on port 8080");
+  console.log("This server is running on port " + PORT);
 
   new Promise((resolve, reject) => {
     const settings = {

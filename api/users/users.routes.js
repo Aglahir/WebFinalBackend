@@ -1,7 +1,6 @@
 module.exports = function (db) {
   const router = require("express").Router({ mergeParams: true });
   const handlePromise = require("../../helpers/handlePromise");
-  const repository = require("./users.repository")(db);
   const bcryptjs = require("bcryptjs");
   const jsonParser = require("body-parser").json();
 
@@ -14,12 +13,14 @@ module.exports = function (db) {
       return res.status(400).end();
     }
     if (!user_id && !tag_id) {
-      handlePromise(req, res, repository.getAllUsers());
+      if (req.user.user_type === 4)
+        handlePromise(req, res, db.users.getAllUsers());
+      else handlePromise(req, res, db.users.getUsersByTagArray(req.user.tags));
     } else {
       if (user_id) {
-        handlePromise(req, res, repository.getUserById(user_id));
+        handlePromise(req, res, db.users.getUserById(user_id));
       } else {
-        handlePromise(req, res, repository.getUsersByTag(tag_id));
+        handlePromise(req, res, db.users.getUsersByTag(tag_id));
       }
     }
   });
@@ -88,13 +89,13 @@ module.exports = function (db) {
         .hash(newUser.password, 10)
         .then((hashedPassword) => {
           newUser.password = hashedPassword;
-          handlePromise(req, res, repository.updateUser(user_id, newUser));
+          handlePromise(req, res, db.users.updateUser(user_id, newUser));
         })
         .catch((err) => {
           throw new Error(err.message);
         });
     } else {
-      handlePromise(req, res, repository.updateUser(user_id, newUser));
+      handlePromise(req, res, db.users.updateUser(user_id, newUser));
     }
   });
 
@@ -105,7 +106,7 @@ module.exports = function (db) {
       res.statusMessage = "Missing 'user_id' parameter in body";
       return res.status(400).end();
     } else {
-      handlePromise(req, res, repository.deleteUser(user_id));
+      handlePromise(req, res, db.users.deleteUser(user_id));
     }
   });
 

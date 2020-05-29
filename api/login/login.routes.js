@@ -22,10 +22,7 @@ module.exports = function (db) {
             .then((result) => {
               if (result) {
                 let userData = {
-                  _id: user._id,
-                  full_name: user.full_name,
-                  user_name: user.user_name,
-                  color: user.color,
+                  user_id: user._id,
                 };
                 jwt.sign(
                   userData,
@@ -38,7 +35,9 @@ module.exports = function (db) {
                       return res.status(400).end();
                     }
 
-                    return res.status(200).json({ sessiontoken: token });
+                    return res
+                      .status(200)
+                      .json({ sessiontoken: token, user: user });
                   }
                 );
               } else {

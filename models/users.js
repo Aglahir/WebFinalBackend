@@ -49,6 +49,7 @@ const Users = {
   getUserById: function (user_id) {
     return userModel
       .findOne({ _id: user_id })
+      .populate("tags")
       .then((user) => {
         return user;
       })
@@ -61,6 +62,21 @@ const Users = {
       .findOne({ user_name })
       .then((user) => {
         return user;
+      })
+      .catch((err) => {
+        throw new Error(err.message);
+      });
+  },
+  getUsersByTagArray: function (tags) {
+    return userModel
+      .find({
+        tags: {
+          $in: tags,
+        },
+      })
+      .populate("tags")
+      .then((result) => {
+        return result;
       })
       .catch((err) => {
         throw new Error(err.message);

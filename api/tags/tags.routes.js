@@ -6,10 +6,19 @@ module.exports = function (db) {
   router.get("/", (req, res) => {
     let tag_id = req.query.tag_id;
 
-    if (!tag_id) {
+    if (req.user.user_type === 4) {
       handlePromise(req, res, db.tags.getAllTags());
     } else {
-      handlePromise(req, res, db.tags.getTagById(tag_id));
+      if (tag_id) {
+        req.user.tags.forEach((element) => {
+          if (element.tag_id === tag_id) return res.status(200).json(element);
+        });
+
+        res.statusMessage = "Restricted information";
+        return res.status(401).end();
+      } else {
+        return res.status(200).json(req.user.tags);
+      }
     }
   });
 
@@ -37,13 +46,48 @@ module.exports = function (db) {
       return res.status(400).end();
     }
 
-    handlePromise(req, res, db.tags.updateTag(tag_id, tag_name));
+    if (req.user.user_type === 4) {
+      handlePromise(req, res, db.tags.updateTag(tag_id, tag_name));
+    } else {
+      let flag = false;
+      for (let tag in currentUser.tags) {
+        if (currentUser.tags[tag].tag_id === tag_id) {
+          flag = true;
+          break;
+        }
+      }
+
+      if (flag) {
+        handlePromise(req, res, db.tags.updateTag(tag_id, tag_name));
+      } else {
+        res.statusMessage = "Restricted information";
+        return res.status(401).end();
+      }
+    }
   });
 
   router.delete("/", jsonParser, (req, res) => {
     let { tag_id } = req.body;
 
-    handlePromise(req, res, db.tags.deleteTag(tag_id));
+    if (!tag_id) {
+      res.statusMessage = "Missing tag_id";
+      return res.status(400).end();
+    }
+
+    let flag = false;
+    for (let tag in currentUser.tags) {
+      if (currentUser.tags[tag].tag_id === tag_id) {
+        flag = true;
+        break;
+      }
+    }
+
+    if (flag) {
+      handlePromise(req, res, db.tags.deleteTag(tag_id));
+    } else {
+      res.statusMessage = "Restricted information";
+      return res.status(401).end();
+    }
   });
 
   return router;

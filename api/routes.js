@@ -4,10 +4,11 @@ const path = require("path");
 const baseDir = __dirname;
 const basename = path.basename(__filename);
 const cors = require("../middleware/cors");
-const tokenValidation = require("../middleware/TokenValidation");
+
 //const validatePermissions = require("./middleware/ValidatePermissions");
 
 function eRoutes(db) {
+  const tokenValidation = require("../middleware/TokenValidation")(db);
   const router = express.Router();
   console.log(baseDir);
 
