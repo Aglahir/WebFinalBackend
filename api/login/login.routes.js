@@ -10,7 +10,7 @@ module.exports = function (db) {
     let { user_name, password } = req.body;
     if (!user_name || !password) {
       res.statusMessage = "Parameter missing in the body of the request.";
-      return res.status(406).end();
+      return res.status(400).end();
     }
 
     db.users
@@ -35,9 +35,18 @@ module.exports = function (db) {
                       return res.status(400).end();
                     }
 
+                    let formatUser = {
+                      user_id: user._id,
+                      user_type: user.user_type,
+                      full_name: user.full_name,
+                      user_name: user.user_name,
+                      user_type: user.user_type,
+                      color: user.color,
+                    };
+
                     return res
                       .status(200)
-                      .json({ sessiontoken: token, user: user });
+                      .json({ sessiontoken: token, user: formatUser });
                   }
                 );
               } else {

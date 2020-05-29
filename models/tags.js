@@ -1,11 +1,18 @@
 const mongoose = require("mongoose");
-
-const tagsSchema = mongoose.Schema({
-  tag_name: {
-    type: String,
-    required: true,
-    unique: true,
+const opts = { toJSON: { virtuals: true } };
+const tagsSchema = mongoose.Schema(
+  {
+    tag_name: {
+      type: String,
+      required: true,
+      unique: true,
+    },
   },
+  opts
+);
+
+tagsSchema.virtual("tag_id").get(function () {
+  return this._id;
 });
 
 const modelName = "tags";

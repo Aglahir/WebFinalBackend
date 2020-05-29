@@ -1,38 +1,56 @@
 const mongoose = require("mongoose");
-
-const usersSchema = mongoose.Schema({
-  full_name: {
-    type: String,
-    required: true,
-  },
-  user_name: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  user_type: {
-    type: Number,
-    required: true,
-  },
-  color: {
-    type: String,
-    required: true,
-  },
-  tags: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "tags",
+const opts = { toJSON: { virtuals: true } };
+const usersSchema = mongoose.Schema(
+  {
+    full_name: {
+      type: String,
+      required: true,
     },
-  ],
+    user_name: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    user_type: {
+      type: Number,
+      required: true,
+    },
+    color: {
+      type: String,
+      required: true,
+    },
+    tags: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "tags",
+      },
+    ],
+  },
+  opts
+);
+
+usersSchema.virtual("user_id").get(function () {
+  return this._id;
 });
 
 const modelName = "users";
 
 const userModel = mongoose.model(modelName, usersSchema);
+
+const validProjection = [
+  "user_id",
+  "full_name",
+  "user_name",
+  "user_type",
+  "color",
+  "tags",
+];
+
+const tagsProjection = ["tag_id", "tag_name"];
 
 const Users = {
   modelName: modelName,
@@ -49,7 +67,7 @@ const Users = {
   getUserById: function (user_id) {
     return userModel
       .findOne({ _id: user_id })
-      .populate("tags")
+      .populate("tags", tagsProjection)
       .then((user) => {
         return user;
       })
@@ -57,6 +75,7 @@ const Users = {
         throw new Error(err.message);
       });
   },
+  // This needs to return password --> Login
   getUserByUsername: function (user_name) {
     return userModel
       .findOne({ user_name })
@@ -73,8 +92,9 @@ const Users = {
         tags: {
           $in: tags,
         },
+        validProjection,
       })
-      .populate("tags")
+      .populate("tags", tagsProjection)
       .then((result) => {
         return result;
       })
@@ -84,8 +104,8 @@ const Users = {
   },
   getAllUsers: function () {
     return userModel
-      .find()
-      .populate("tags")
+      .find({}, validProjection)
+      .populate("tags", tagsProjection)
       .then((result) => {
         return result;
       })
@@ -95,7 +115,7 @@ const Users = {
   },
   updateUser: function (user_id, newUser) {
     return userModel
-      .findByIdAndUpdate(user_id, newUser)
+      .findByIdAndUpdate(user_id, newUser, validProjection)
       .then((result) => {
         return result;
       })
@@ -105,7 +125,7 @@ const Users = {
   },
   deleteUser: function (user_id) {
     return userModel
-      .findByIdAndDelete({ _id: user_id })
+      .findByIdAndDelete({ _id: user_id }, validProjection)
       .then((result) => {
         return result;
       })
@@ -115,7 +135,7 @@ const Users = {
   },
   getUsersByTag: function (tag_id) {
     return userModel
-      .find({ tags: tag_id })
+      .find({ tags: tag_id }, validProjection)
       .then((result) => {
         return result;
       })
