@@ -22,7 +22,7 @@ module.exports = function (db) {
             .then((result) => {
               if (result) {
                 let userData = {
-                  user_id: user._id,
+                  _id: user._id,
                 };
                 jwt.sign(
                   userData,

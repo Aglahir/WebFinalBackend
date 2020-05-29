@@ -4,8 +4,6 @@ const { SECRET_TOKEN } = require("../config");
 function TokenValidation(db) {
   return (req, res, next) => {
     let route = req.params.route;
-    console.log(route);
-
     if (route == "login") {
       next();
     } else {
@@ -22,7 +20,7 @@ function TokenValidation(db) {
           return res.status(400).end();
         } else {
           db.users
-            .getUserById(decoded.user_id)
+            .getUserById(decoded._id)
             .then((user) => {
               req.user = user;
               next();

@@ -67,10 +67,10 @@ module.exports = function (db) {
   });
 
   router.patch("/", jsonParser, (req, res) => {
-    let { user_id, full_name, password, user_type, color, tags } = req.body;
-
+    let { _id, full_name, password, user_type, color, tags } = req.body;
+    let user_id = _id;
     if (!user_id) {
-      res.statusMessage = "Missing 'user_id'";
+      res.statusMessage = "Missing '_id'";
       return res.status(400).end();
     }
 
@@ -114,10 +114,10 @@ module.exports = function (db) {
   });
 
   router.delete("/", jsonParser, (req, res) => {
-    let { user_id } = req.body;
-
+    let { _id } = req.body;
+    let user_id = _id;
     if (!user_id) {
-      res.statusMessage = "Missing 'user_id' parameter in body";
+      res.statusMessage = "Missing '_id' parameter in body";
       return res.status(400).end();
     } else {
       handlePromise(req, res, db.users.deleteUser(user_id));

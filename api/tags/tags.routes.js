@@ -38,7 +38,8 @@ module.exports = function (db) {
   });
 
   router.patch("/", jsonParser, (req, res) => {
-    let { tag_id, tag_name } = req.body;
+    let { _id, tag_name } = req.body;
+    let tag_id = _id;
 
     if (!tag_id) {
       res.statusMessage = "Missing 'tag_id'";
@@ -71,8 +72,8 @@ module.exports = function (db) {
   });
 
   router.delete("/", jsonParser, (req, res) => {
-    let { tag_id } = req.body;
-
+    let { _id } = req.body;
+    let tag_id = _id;
     if (!tag_id) {
       res.statusMessage = "Missing tag_id";
       return res.status(400).end();

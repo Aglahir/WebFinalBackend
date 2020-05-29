@@ -52,67 +52,21 @@ _Login with user information and return token_
 }
 ```
 
+---
+
 ### Users
 
 _Get user information depending on session permissions_
 
 **URL** : `/api/users`
 
+**Query** :
+`user_id` (optional, to get only one user)
+`tag_id` (optional, to get only users with this tag_id)
+
 **Method** : `GET`
 
-**Headers** : sessiontoken
-
-**Body**
-
-```json
-[
-
-{
-
-"tags": [
-
-{
-
-"_id": "5ed01c9e29bbc45bbc8c7272",
-
-"tag_name": "tag1",
-
-"tag_id": "5ed01c9e29bbc45bbc8c7272",
-
-"id": "5ed01c9e29bbc45bbc8c7272"
-
-},
-
-{
-
-"_id": "5ed0112dfbb5ec6350e65d7b",
-
-"tag_name": "tag2",
-
-"tag_id": "5ed0112dfbb5ec6350e65d7b",
-
-"id": "5ed0112dfbb5ec6350e65d7b"
-
-}
-
-],
-
-"_id": "5ecf4990d0671348f4460134",
-
-"full_name": "fname1",
-
-"user_name": "username1",
-
-"user_type": 1,
-
-"color": "#FFFFFF",
-
-"user_id": "5ecf4990d0671348f4460134",
-
-"id": "5ecf4990d0671348f4460134"
-
-},
-```
+**Headers** : `sessiontoken`
 
 ### Success Response
 
@@ -126,21 +80,259 @@ _Get user information depending on session permissions_
     "tags": [
       {
         "_id": "5ed01c9e29bbc45bbc8c7272",
-        "tag_name": "tag1",
-        "tag_id": "5ed01c9e29bbc45bbc8c7272",
-        "id": "5ed01c9e29bbc45bbc8c7272"
+        "tag_name": "tag1"
+      },
+      {
+        "_id": "5ed0112dfbb5ec6350e65d7b",
+        "tag_name": "tag2"
       }
     ],
     "_id": "5ecf4990d0671348f4460134",
     "full_name": "fname1",
     "user_name": "username1",
     "user_type": 1,
-    "color": "#FFFFFF",
-    "user_id": "5ecf4990d0671348f4460134",
-    "id": "5ecf4990d0671348f4460134"
+    "color": "#FFFFFF"
   }
 ]
 ```
+
+---
+
+**URL** : `/api/users`
+
+**Method** : `POST`
+
+**Headers** : `sessiontoken`
+
+**Body** :
+
+```json
+{
+  "full_name": "fname2",
+  "password": "nicepass",
+  "user_name": "username2",
+  "user_type": 1,
+  "color": "#FFFFFF",
+  "tags": [
+    {
+      "_id": "5ed01c9e29bbc45bbc8c7272",
+      "tag_name": "tag1"
+    }
+  ]
+}
+```
+
+### Success Response
+
+**Code** : `200 OK`
+
+**Body Response**
+
+```json
+{
+  "_id": "5ed0aff1e8ad142860310b5f",
+  "full_name": "fname2",
+  "user_name": "username2",
+  "user_type": 1,
+  "color": "#FFFFFF",
+  "tags": ["5ed01c9e29bbc45bbc8c7272"]
+}
+```
+
+---
+
+**URL** : `/api/users`
+
+**Method** : `PATCH`
+
+**Headers** : `sessiontoken`
+
+**Body** :
+
+```json
+{
+  "user_id": "5ed0b726c9526351943a64fd",
+  "full_name": "fname22",
+  "user_name": "username2",
+  "user_type": 1,
+  "color": "#FFFFFF",
+  "tags": ["5ed01c9e29bbc45bbc8c7272"]
+}
+```
+
+### Success Response
+
+**Code** : `200 OK`
+
+**Body Response**
+
+```json
+{
+  "_id": "5ed0b726c9526351943a64fd",
+  "full_name": "fname22",
+  "user_name": "username2",
+  "user_type": 1,
+  "color": "#FFFFFF",
+  "tags": ["5ed01c9e29bbc45bbc8c7272"]
+}
+```
+
+---
+
+**URL** : `/api/users`
+
+**Method** : `DELETE`
+
+**Headers** : `sessiontoken`
+
+**Body** :
+
+```json
+{
+  "user_id": "5ed0b6aec9526351943a64fc"
+}
+```
+
+### Success Response
+
+**Code** : `200 OK`
+
+**Body Response**
+
+```json
+{
+  "_id": "5ed0b6aec9526351943a64fc",
+  "full_name": "fname2",
+  "user_name": "username2",
+  "user_type": 1,
+  "color": "#FFFFFF",
+  "tags": ["5ed01c9e29bbc45bbc8c7272"]
+}
+```
+
+---
+
+### Tags
+
+_Get tags information depending on session permissions_
+
+**URL** : `/api/tags`
+
+**Query** :
+`tag_id` (optional, to get only users with this tag_id)
+
+**Method** : `GET`
+
+**Headers** : `sessiontoken`
+
+### Success Response
+
+**Code** : `200 OK`
+
+**Body Response**
+
+```json
+[
+  {
+    "_id": "5ed0112dfbb5ec6350e65d7b",
+    "tag_name": "tag2"
+  },
+  {
+    "_id": "5ed01c9e29bbc45bbc8c7272",
+    "tag_name": "tag1"
+  }
+]
+```
+
+---
+
+**URL** : `/api/tags`
+
+**Method** : `POST`
+
+**Headers** : `sessiontoken`
+
+**Body** :
+
+```json
+{
+  "tag_name": "tag4"
+}
+```
+
+### Success Response
+
+**Code** : `200 OK`
+
+**Body Response**
+
+```json
+{
+  "_id": "5ed0c03b21fd1e48c438d9d8",
+  "tag_name": "tag4"
+}
+```
+
+---
+
+**URL** : `/api/tags`
+
+**Method** : `PATCH`
+
+**Headers** : `sessiontoken`
+
+**Body** :
+
+```json
+{
+  "tag_id": "5ed06f0bf877164bc4187865",
+  "tag_name": "tag3.1"
+}
+```
+
+### Success Response
+
+**Code** : `200 OK`
+
+**Body Response**
+
+```json
+{
+  "_id": "5ed06f0bf877164bc4187865",
+  "tag_name": "tag3"
+}
+```
+
+---
+
+**URL** : `/api/tags`
+
+**Method** : `DELETE`
+
+**Headers** : `sessiontoken`
+
+**Body** :
+
+```json
+{
+  "tag_id": "5ed0c03b21fd1e48c438d9d8"
+}
+```
+
+### Success Response
+
+**Code** : `200 OK`
+
+**Body Response**
+
+```json
+{
+  "_id": "5ed0c03b21fd1e48c438d9d8",
+  "tag_name": "tag4"
+}
+```
+
+---
 
 ## Other responses for all endpoints
 
@@ -161,3 +353,9 @@ _Get user information depending on session permissions_
 **Condition** : Session permissions are not enough to execute the api call
 
 **Code** : `401 UNAUTHORIZED`
+
+### Not Acceptable
+
+**Condition** : Error on missing parameters or some invalid input formats
+
+**Code** : `406 NOT ACCEPTABLE`

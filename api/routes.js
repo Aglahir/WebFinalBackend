@@ -5,7 +5,7 @@ const baseDir = __dirname;
 const basename = path.basename(__filename);
 const cors = require("../middleware/cors");
 
-//const validatePermissions = require("./middleware/ValidatePermissions");
+const validatePermissions = require("../middleware/ValidatePermissions");
 
 function eRoutes(db) {
   const tokenValidation = require("../middleware/TokenValidation")(db);
@@ -13,7 +13,7 @@ function eRoutes(db) {
   console.log(baseDir);
 
   router.use(cors);
-  router.use("/:route", [tokenValidation]);
+  router.use("/:route", [tokenValidation, validatePermissions]);
 
   router.use((req, res, next) => {
     console.log(req.sessiontoken);
