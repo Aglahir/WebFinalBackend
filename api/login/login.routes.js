@@ -36,7 +36,7 @@ module.exports = function (db) {
                     }
 
                     let formatUser = {
-                      user_id: user._id,
+                      _id: user._id,
                       user_type: user.user_type,
                       full_name: user.full_name,
                       user_name: user.user_name,
