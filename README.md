@@ -43,7 +43,7 @@ _Login with user information and return token_
 {
   "sessiontoken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNWVjZmRjYWY3YjEwNDQ0OTE0NDIzMmJjIiwiaWF0IjoxNTkwNzI5MjY0LCJleHAiOjE1OTA4MTU2NjR9.OglQ26U3DhLWTX9ER1nSyYZ5XSyaW9mG8EWhmOX4qd8",
   "user": {
-    "user_id": "5ecfdcaf7b104449144232bc",
+    "_id": "5ecfdcaf7b104449144232bc",
     "user_type": 3,
     "full_name": "admin1",
     "user_name": "admin1",
@@ -94,6 +94,31 @@ _Get user information depending on session permissions_
     "color": "#FFFFFF"
   }
 ]
+```
+
+---
+
+**URL** : `/api/users/myinfo`
+
+**Method** : `GET`
+
+**Headers** : `sessiontoken`
+
+### Success Response
+
+**Code** : `200 OK`
+
+**Body Response**
+
+```json
+{
+  "_id": "5ecfd7fbd855ac523c29128b",
+  "full_name": "superuser",
+  "user_name": "superuser",
+  "user_type": 4,
+  "color": "#000000",
+  "tags": []
+}
 ```
 
 ---
@@ -151,7 +176,7 @@ _Get user information depending on session permissions_
 
 ```json
 {
-  "user_id": "5ed0b726c9526351943a64fd",
+  "_id": "5ed0b726c9526351943a64fd",
   "full_name": "fname22",
   "user_name": "username2",
   "user_type": 1,
@@ -285,7 +310,7 @@ _Get tags information depending on session permissions_
 
 ```json
 {
-  "tag_id": "5ed06f0bf877164bc4187865",
+  "_id": "5ed06f0bf877164bc4187865",
   "tag_name": "tag3.1"
 }
 ```
@@ -315,7 +340,7 @@ _Get tags information depending on session permissions_
 
 ```json
 {
-  "tag_id": "5ed0c03b21fd1e48c438d9d8"
+  "_id": "5ed0c03b21fd1e48c438d9d8"
 }
 ```
 
@@ -329,6 +354,104 @@ _Get tags information depending on session permissions_
 {
   "_id": "5ed0c03b21fd1e48c438d9d8",
   "tag_name": "tag4"
+}
+```
+
+---
+
+---
+
+### Data
+
+_Get data information depending on session permissions_
+
+**URL** : `/api/data`
+
+**Query** :
+`user_id` (optional, to get data only from that user)
+`tag_id` (optional, to get only users with this tag_id)
+
+**Method** : `GET`
+
+**Headers** : `sessiontoken`
+
+### Success Response
+
+**Code** : `200 OK`
+
+**Body Response**
+
+```json
+[
+  {
+    "_id": "5ed0e690a80cdc4aa4c016c5",
+    "user_id": "5ed0e690a80cdc4aa4c016c4",
+    "date": "2020-01-01T11:40:16.932Z",
+    "income": 457,
+    "expense": 591
+  }
+]
+```
+
+---
+
+**URL** : `/api/data`
+
+**Method** : `DELETE`
+
+**Headers** : `sessiontoken`
+
+**Body** :
+
+```json
+{
+  "id_": "5ed0c0ab21dva48c438d9d8"(optional)
+}
+```
+
+### Success Response
+
+**Code** : `200 OK`
+
+**Body Response**
+
+```json
+{
+  "status": "ok"
+}
+```
+
+---
+
+---
+
+**URL** : `/api/data/all` (only superuser)
+
+**Method** : `DELETE`
+
+**Headers** : `sessiontoken`
+
+### Success Response
+
+**Code** : `200 OK`
+
+**Body Response**
+
+```json
+{
+  "status": "ok"
+}
+```
+
+### Error Response
+
+**Code** : `400`
+
+**Body Response**
+
+```json
+{
+  "status": "nok"
 }
 ```
 
