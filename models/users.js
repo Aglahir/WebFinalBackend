@@ -1,40 +1,33 @@
 const mongoose = require("mongoose");
-const opts = { toJSON: { virtuals: true } };
-const usersSchema = mongoose.Schema(
-  {
-    full_name: {
-      type: String,
-      required: true,
-    },
-    user_name: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    password: {
-      type: String,
-      required: true,
-    },
-    user_type: {
-      type: Number,
-      required: true,
-    },
-    color: {
-      type: String,
-      required: true,
-    },
-    tags: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "tags",
-      },
-    ],
-  },
-  opts
-);
 
-usersSchema.virtual("user_id").get(function () {
-  return this._id;
+const usersSchema = mongoose.Schema({
+  full_name: {
+    type: String,
+    required: true,
+  },
+  user_name: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  user_type: {
+    type: Number,
+    required: true,
+  },
+  color: {
+    type: String,
+    required: true,
+  },
+  tags: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "tags",
+    },
+  ],
 });
 
 const modelName = "users";
@@ -42,7 +35,7 @@ const modelName = "users";
 const userModel = mongoose.model(modelName, usersSchema);
 
 const validProjection = [
-  "user_id",
+  "_id",
   "full_name",
   "user_name",
   "user_type",
@@ -50,11 +43,11 @@ const validProjection = [
   "tags",
 ];
 
-const tagsProjection = ["tag_id", "tag_name"];
+const tagsProjection = ["tag_name"];
 
 function formatUser(user) {
   return {
-    user_id: user.user_id,
+    _id: user._id,
     full_name: user.full_name,
     user_name: user.user_name,
     user_type: user.user_type,
@@ -77,7 +70,7 @@ const Users = {
   },
   getUserById: function (user_id) {
     return userModel
-      .findOne({ _id: user_id })
+      .findOne({ _id: user_id }, validProjection)
       .populate("tags", tagsProjection)
       .then((user) => {
         return formatUser(user);
@@ -128,7 +121,7 @@ const Users = {
     return userModel
       .findByIdAndUpdate(user_id, newUser, validProjection)
       .then((result) => {
-        return result;
+        return formatUser(result);
       })
       .catch((err) => {
         throw new Error(err.message);
@@ -138,7 +131,7 @@ const Users = {
     return userModel
       .findByIdAndDelete({ _id: user_id }, validProjection)
       .then((result) => {
-        return result;
+        return formatUser(result);
       })
       .catch((err) => {
         throw new Error(err.message);

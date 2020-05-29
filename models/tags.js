@@ -1,19 +1,20 @@
 const mongoose = require("mongoose");
-const opts = { toJSON: { virtuals: true } };
-const tagsSchema = mongoose.Schema(
-  {
-    tag_name: {
-      type: String,
-      required: true,
-      unique: true,
-    },
+const tagsSchema = mongoose.Schema({
+  tag_name: {
+    type: String,
+    required: true,
+    unique: true,
   },
-  opts
-);
-
-tagsSchema.virtual("tag_id").get(function () {
-  return this._id;
 });
+
+const tagsProjection = ["tag_name"];
+
+function formatTag(tag) {
+  return {
+    _id: tag._id,
+    tag_name: tag.tag_name,
+  };
+}
 
 const modelName = "tags";
 
@@ -25,7 +26,7 @@ const Tags = {
     return tagsModel
       .create(newTag)
       .then((tag) => {
-        return tag;
+        return formatTag(tag);
       })
       .catch((err) => {
         throw new Error(err.message);
@@ -33,7 +34,7 @@ const Tags = {
   },
   getTagById: function (tag_id) {
     return tagsModel
-      .findOne({ _id: tag_id })
+      .findOne({ _id: tag_id }, tagsProjection)
       .then((tag) => {
         return tag;
       })
@@ -43,7 +44,7 @@ const Tags = {
   },
   getAllTags: function () {
     return tagsModel
-      .find()
+      .find({}, tagsProjection)
       .then((result) => {
         return result;
       })
@@ -53,9 +54,9 @@ const Tags = {
   },
   updateTag: function (tag_id, tag_name) {
     return tagsModel
-      .findByIdAndUpdate(tag_id, { tag_name })
+      .findByIdAndUpdate(tag_id, { tag_name }, tagsProjection)
       .then((result) => {
-        return result;
+        return formatTag(result);
       })
       .catch((err) => {
         throw new Error(err.message);
@@ -63,9 +64,9 @@ const Tags = {
   },
   deleteTag: function (tag_id) {
     return tagsModel
-      .findByIdAndDelete(tag_id)
+      .findByIdAndDelete(tag_id, tagsProjection)
       .then((result) => {
-        return result;
+        return formatTag(result);
       })
       .catch((err) => {
         throw new Error(err.message);
