@@ -6,6 +6,10 @@ module.exports = function (db) {
 
   const generateData = require("../../helpers/generateData");
 
+  router.get("/myinfo", (req, res) => {
+    handlePromise(req, res, db.users.getUserById(req.user._id));
+  });
+
   router.get("/", (req, res) => {
     let user_id = req.query.user_id;
     let tag_id = req.query.tag_id;

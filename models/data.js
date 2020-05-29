@@ -55,9 +55,23 @@ const Data = {
         match: { tags: { $in: { _id: tag_id } } },
       })
       .then((result) => {
-        return result.filter((value, index) => {
+        let filtered = result.filter((value, index) => {
           if (value.user_id !== null && value) return value;
         });
+        let data = [];
+
+        for (let i = 1; i < 13; i++) {
+          data.push({ date: new Date(`2020-${i}-1`), income: 0, expense: 0 });
+        }
+
+        for (let index in filtered) {
+          data[filtered[index].date.getMonth()].income +=
+            filtered[index].income;
+          data[filtered[index].date.getMonth()].expense +=
+            filtered[index].expense;
+        }
+
+        return data;
       })
       .catch((err) => {
         throw new Error(err.message);
