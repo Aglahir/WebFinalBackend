@@ -52,13 +52,24 @@ const validProjection = [
 
 const tagsProjection = ["tag_id", "tag_name"];
 
+function formatUser(user) {
+  return {
+    user_id: user.user_id,
+    full_name: user.full_name,
+    user_name: user.user_name,
+    user_type: user.user_type,
+    color: user.color,
+    tags: user.tags,
+  };
+}
+
 const Users = {
   modelName: modelName,
   createUser: function (newUser) {
     return userModel
       .create(newUser)
       .then((user) => {
-        return user;
+        return formatUser(user);
       })
       .catch((err) => {
         throw new Error(err.message);
@@ -69,7 +80,7 @@ const Users = {
       .findOne({ _id: user_id })
       .populate("tags", tagsProjection)
       .then((user) => {
-        return user;
+        return formatUser(user);
       })
       .catch((err) => {
         throw new Error(err.message);

@@ -26,9 +26,22 @@ module.exports = function (db) {
   });
 
   router.post("/", jsonParser, (req, res) => {
-    let { full_name, user_name, password, user_type, color } = req.body;
-    if (!full_name || !user_name || !password || !user_type || !color) {
+    let { full_name, user_name, password, user_type, color, tags } = req.body;
+    if (
+      !full_name ||
+      !user_name ||
+      !password ||
+      !user_type ||
+      !color ||
+      !tags
+    ) {
       res.statusMessage = "Parameter missing in the body of the request.";
+      return res.status(406).end();
+    }
+
+    // REGEX test on color format
+    if (!/#[0-9a-fA-F]{6}$/.test(color)) {
+      res.statusMessage = "Invalid 'color' format";
       return res.status(406).end();
     }
 
@@ -38,6 +51,7 @@ module.exports = function (db) {
       password,
       user_type,
       color,
+      tags,
     };
 
     bcryptjs
