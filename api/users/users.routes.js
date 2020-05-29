@@ -4,6 +4,8 @@ module.exports = function (db) {
   const bcryptjs = require("bcryptjs");
   const jsonParser = require("body-parser").json();
 
+  const generateData = require("../../helpers/generateData");
+
   router.get("/", (req, res) => {
     let user_id = req.query.user_id;
     let tag_id = req.query.tag_id;
@@ -59,7 +61,28 @@ module.exports = function (db) {
       .then((hashedPassword) => {
         newUser.password = hashedPassword;
 
-        handlePromise(req, res, db.users.createUser(newUser));
+        db.users
+          .createUser(newUser)
+          .then((result) => {
+            if (result) {
+              db.data
+                .insertMany(generateData(result._id))
+                .then((insertResult) => {
+                  return res.status(200).json(result);
+                })
+                .catch((err) => {
+                  res.statusMessage = err.message;
+                  return res.status(400).end();
+                });
+            } else {
+              res.statusMessage = "No results";
+              return res.status(204).end();
+            }
+          })
+          .catch((err) => {
+            res.statusMessage = err.message;
+            return res.status(400).end();
+          });
       })
       .catch((err) => {
         throw new Error(err.message);

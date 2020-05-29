@@ -14,11 +14,15 @@ module.exports = function (db) {
     if (!user_id && !tag_id) {
       if (req.user.user_type === 4)
         handlePromise(req, res, db.data.getAllData());
-      else handlePromise(req, res, db.data.getDataByUserId(req.user.user_id));
+      else handlePromise(req, res, db.data.getDataByUserId(req.user._id));
     } else {
+      console.log("checkpoint");
+
       if (user_id) {
+        console.log("checkpointFail");
         handlePromise(req, res, db.data.getDataByUserId(user_id));
       } else {
+        console.log("checkpoint2");
         handlePromise(req, res, db.data.getDataByTag(tag_id));
       }
     }
@@ -58,13 +62,54 @@ module.exports = function (db) {
     handlePromise(req, res, db.data.createData(newData));
   });
 
+  router.get("/generateData", (req, res) => {
+    if (req.user.user_type !== 4) {
+      res.statusMessage = "Unauthorized access";
+      res.status(401).end();
+    } else {
+      var data = [];
+      var value1 = 500;
+      var value2 = 600;
+
+      for (var i = 0; i < 12; i++) {
+        let date = new Date();
+        date.setMonth(i, 1);
+        value1 -= Math.round(
+          (Math.random() < 0.5 ? 1 : -1) * Math.random() * 50
+        );
+        value2 -= Math.round(
+          (Math.random() < 0.5 ? 1 : -1) * Math.random() * 50
+        );
+        data.push({
+          user_id: req.user._id,
+          date: date,
+          income: value1,
+          expense: value2,
+        });
+      }
+
+      console.log(data);
+
+      handlePromise(req, res, db.data.insertMany(data));
+    }
+  });
+
   router.delete("/", jsonParser, (req, res) => {
     let { _id } = req.body;
     let user_id = _id;
     if (!user_id) {
-      user_id = req.user.user_id;
+      user_id = req.user._id;
     }
     handlePromise(req, res, db.data.deleteByUserId(user_id));
+  });
+
+  router.delete("/all", jsonParser, (req, res) => {
+    if (req.user.user_type == 4) {
+      handlePromise(req, res, db.data.deleteAll());
+    } else {
+      res.statusMessage = "Unauthorized access";
+      res.status(401).end();
+    }
   });
 
   return router;

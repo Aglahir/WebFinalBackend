@@ -49,12 +49,15 @@ const Data = {
   },
   getDataByTag: function (tag_id) {
     return dataModel
-      .find({}, dataProjection)
-      .populate("users", {
-        tags: [tag_id],
+      .find()
+      .populate({
+        path: "user_id",
+        match: { tags: { $in: { _id: tag_id } } },
       })
       .then((result) => {
-        return result;
+        return result.filter((value, index) => {
+          if (value.user_id !== null && value) return value;
+        });
       })
       .catch((err) => {
         throw new Error(err.message);
@@ -65,6 +68,16 @@ const Data = {
       .create(newData)
       .then((data) => {
         return formatData(data);
+      })
+      .catch((err) => {
+        throw new Error(err.message);
+      });
+  },
+  insertMany: function (dataArray) {
+    return dataModel
+      .insertMany(dataArray)
+      .then((result) => {
+        return result;
       })
       .catch((err) => {
         throw new Error(err.message);
@@ -84,7 +97,25 @@ const Data = {
     return dataModel
       .deleteMany({ user_id })
       .then((result) => {
-        return result;
+        if (result) {
+          return { status: "ok" };
+        } else {
+          return { status: "error" };
+        }
+      })
+      .catch((err) => {
+        throw new Error(err.message);
+      });
+  },
+  deleteAll: function () {
+    return dataModel
+      .deleteMany({})
+      .then((result) => {
+        if (result) {
+          return { status: "ok" };
+        } else {
+          return { status: "error" };
+        }
       })
       .catch((err) => {
         throw new Error(err.message);
